@@ -8,11 +8,14 @@ interface TodoDao {
     fun getAllTodo(): List<Todo>
 
     @Insert
-    fun addTodo(todo: Todo)
+    fun addTodo(todo: Todo): Long
 
     @Delete
     fun deleteTodo(todo: Todo)
 
     @Update
     fun updateTodo(todo: Todo)
+
+    @Query("DELETE FROM todo")
+    fun deleteAllTodo()
 }

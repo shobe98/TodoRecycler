@@ -56,19 +56,13 @@ class TodoAdapter : RecyclerView.Adapter<TodoAdapter.ViewHolder>, TodoTouchHelpe
         }
         holder.btnEdit.setOnClickListener {
             (context as ScrollingActivity).showEditTodoDialog(todo, holder.adapterPosition)
-            updateTodo(todo)
+            updateTodoOnPosition(todo, holder.adapterPosition)
         }
 
         holder.cbTodo.setOnClickListener {
             todo.done = holder.cbTodo.isChecked
-            updateTodo(todo)
+            updateTodoOnPosition(todo, holder.adapterPosition)
         }
-    }
-
-    private fun updateTodo(todo: Todo) {
-        Thread {
-            AppDatabase.getInstance(context).todoDao().updateTodo(todo)
-        }.start()
     }
 
     fun deleteTodo(index: Int) {
@@ -89,6 +83,11 @@ class TodoAdapter : RecyclerView.Adapter<TodoAdapter.ViewHolder>, TodoTouchHelpe
         notifyItemInserted(todoList.lastIndex)
     }
 
+    fun updateTodoOnPosition(todo: Todo, index: Int) {
+        todoList.set(index, todo)
+        notifyItemChanged(index)
+    }
+
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cbTodo = itemView.cbTodo
@@ -99,5 +98,15 @@ class TodoAdapter : RecyclerView.Adapter<TodoAdapter.ViewHolder>, TodoTouchHelpe
     }
 
 
+    fun deleteAllTodos() {
+        Thread {
+            AppDatabase.getInstance(context).todoDao().deleteAllTodo()
+
+            (context as ScrollingActivity).runOnUiThread {
+                todoList.clear()
+                notifyDataSetChanged()
+            }
+        }.start()
+    }
 
 }

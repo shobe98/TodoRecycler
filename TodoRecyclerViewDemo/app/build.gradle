@@ -41,4 +41,6 @@ dependencies {
     kapt 'android.arch.persistence.room:compiler:2.2.1'
     implementation 'androidx.room:room-runtime:2.2.1'
     annotationProcessor 'androidx.room:room-compiler:2.2.1'
+
+    implementation 'uk.co.samuelwall:material-tap-target-prompt:2.3.0'
 }

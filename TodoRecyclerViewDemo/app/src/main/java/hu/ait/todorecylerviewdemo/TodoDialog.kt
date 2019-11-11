@@ -14,6 +14,7 @@ class TodoDialog : DialogFragment() {
 
     interface TodoHandler {
         fun todoCreated(item: Todo)
+        fun todoUpdated(item: Todo)
     }
 
     private lateinit var todoHandler: TodoHandler
@@ -68,13 +69,26 @@ class TodoDialog : DialogFragment() {
         val positiveButton = (dialog as AlertDialog).getButton(Dialog.BUTTON_POSITIVE)
         positiveButton.setOnClickListener {
             if (etTodoText.text.isNotEmpty()) {
-                handleTodoCreate()
-
+                if (isEditMode) {
+                    handleTodoEdit()
+                } else {
+                    handleTodoCreate()
+                }
                 dialog.dismiss()
             } else {
                 etTodoText.error = "This field can not be empty"
             }
         }
+    }
+
+    private fun handleTodoEdit() {
+        val todoToEdit = arguments?.getSerializable(
+            "KEY_TODO"
+        ) as Todo
+        todoToEdit.createDate = etTodoDate.text.toString()
+        todoToEdit.todoText = etTodoText.text.toString()
+
+        todoHandler.todoUpdated(todoToEdit)
     }
 
     private fun handleTodoCreate() {
